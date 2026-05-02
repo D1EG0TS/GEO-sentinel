@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """
-Sentinel-Geo - Inicialización de Base de Datos SQLite
-Crea las tablas necesarias para el microservicio de auditoría
+================================================================================
+SENTINEL-GEO v2.0 - Inicialización de Base de Datos SQLite
+Crea las tablas necesarias para el microservicio de auditoría con GPS
+================================================================================
 """
 import sqlite3
 import os
@@ -25,7 +27,7 @@ def init_database():
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
     
-    # Tabla principal de logs de acceso
+    # Tabla principal de logs de acceso (VERSIÓN 2.0 CON GPS)
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS access_logs (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -37,11 +39,19 @@ def init_database():
             org TEXT,
             isp_type TEXT,
             coordinates TEXT,
+            -- NUEVOS CAMPOS GPS v2.0
+            gps_lat REAL,
+            gps_lon REAL,
+            gps_accuracy REAL,
+            location_method TEXT DEFAULT 'ip',
+            permission_granted BOOLEAN DEFAULT 0,
+            gps_timestamp TEXT,
+            -- CAMPOS ORIGINALES
             timezone TEXT,
             postal_code TEXT,
             is_vpn BOOLEAN DEFAULT 0,
             is_mobile BOOLEAN DEFAULT 0,
-            status TEXT DEFAULT 'captured',
+            status TEXT DEFAULT 'pending_gps',
             raw_data TEXT,
             timestamp TEXT NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -52,6 +62,8 @@ def init_database():
     cursor.execute('CREATE INDEX IF NOT EXISTS idx_ip ON access_logs(ip_address)')
     cursor.execute('CREATE INDEX IF NOT EXISTS idx_timestamp ON access_logs(timestamp)')
     cursor.execute('CREATE INDEX IF NOT EXISTS idx_status ON access_logs(status)')
+    cursor.execute('CREATE INDEX IF NOT EXISTS idx_location_method ON access_logs(location_method)')
+    cursor.execute('CREATE INDEX IF NOT EXISTS idx_gps_coords ON access_logs(gps_lat, gps_lon)')
     
     # Tabla de zonas autorizadas (preparada para futuro uso)
     cursor.execute('''
@@ -84,13 +96,14 @@ def init_database():
     
     print(f"✅ Base de datos '{DB_NAME}' creada exitosamente")
     print(f"📊 Tablas creadas:")
-    print(f"   - access_logs (registro de accesos)")
+    print(f"   - access_logs (registro de accesos con GPS)")
     print(f"   - authorized_locations (zonas autorizadas)")
     print(f"📍 {len(sample_locations)} ubicaciones de ejemplo cargadas")
+    print(f"🆕 Nuevos campos GPS: gps_lat, gps_lon, gps_accuracy, location_method")
 
 if __name__ == "__main__":
-    print("🚀 Sentinel-Geo - Inicialización de Base de Datos")
-    print("=" * 50)
+    print("🚀 Sentinel-Geo v2.0 - Inicialización de Base de Datos")
+    print("=" * 60)
     init_database()
-    print("=" * 50)
+    print("=" * 60)
     print("✨ Listo para usar!")
